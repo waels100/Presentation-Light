@@ -375,8 +375,10 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
   border-radius: 24px;
   cursor: pointer;
   transition: all .2s;
+  position: relative;
 }
 .tb-user:hover { background: var(--primary-50); }
+.tb-user.is-open { background: var(--primary-50); border-color: var(--primary-300); }
 .tb-user-info { text-align: right; line-height: 1.2; }
 .tb-user-name { font-size: 12.5px; font-weight: 700; color: var(--text); }
 .tb-user-role { font-size: 10.5px; color: var(--text-3); margin-top: 1px; }
@@ -391,6 +393,229 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
   color: #065F46;
   font-weight: 700;
   font-size: 13px;
+  position: relative;
+  transition: transform .25s var(--ease-out-back);
+}
+.tb-user:hover .tb-avatar { transform: scale(1.06); }
+/* Online indicator dot */
+.tb-avatar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: -1px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #15B17A;
+  border: 2px solid var(--surface);
+  box-shadow: 0 0 0 0 rgba(21, 177, 122, .5);
+  animation: avatarPulse 2s ease-in-out infinite;
+}
+@keyframes avatarPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(21, 177, 122, .5); }
+  50%      { box-shadow: 0 0 0 4px rgba(21, 177, 122, 0); }
+}
+
+/* ===== Profile Card (dropdown) ===== */
+.profile-card {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  width: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow:
+    0 20px 50px rgba(11, 79, 140, .15),
+    0 4px 12px rgba(0, 0, 0, .05);
+  z-index: 1000;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(.96);
+  transform-origin: top left;
+  transition: opacity .25s var(--ease-out-cinema),
+              transform .35s var(--ease-out-back),
+              visibility 0s linear .25s;
+  cursor: default;
+  text-align: right;
+}
+[data-theme="dark"] .profile-card {
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, .55),
+    0 4px 12px rgba(0, 0, 0, .35);
+}
+.tb-user.is-open .profile-card {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition: opacity .25s var(--ease-out-cinema),
+              transform .35s var(--ease-out-back),
+              visibility 0s linear 0s;
+}
+/* Tiny arrow pointing up to the avatar */
+.profile-card::before {
+  content: '';
+  position: absolute;
+  top: -7px;
+  left: 24px;
+  width: 12px;
+  height: 12px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  transform: rotate(45deg);
+}
+
+/* Profile head — gradient banner */
+.profile-head {
+  position: relative;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255,255,255,.18) 0%, transparent 50%),
+    linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
+  padding: 22px 20px 18px;
+  color: #fff;
+  text-align: right;
+  overflow: hidden;
+}
+.profile-head::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(255,255,255,.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #DCFCE7, #15B17A);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #065F46;
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 12px;
+  border: 3px solid rgba(255,255,255,.25);
+  box-shadow: 0 6px 14px rgba(0,0,0,.15);
+  position: relative;
+  z-index: 1;
+}
+.profile-status {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  padding: 3px 9px;
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  z-index: 2;
+}
+.profile-status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4ADE80;
+  box-shadow: 0 0 0 0 rgba(74, 222, 128, .6);
+  animation: avatarPulse 2s ease-in-out infinite;
+}
+.profile-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -.2px;
+}
+.profile-role {
+  font-size: 12px;
+  color: rgba(255,255,255,.85);
+  position: relative;
+  z-index: 1;
+}
+
+/* Profile body — info rows */
+.profile-body {
+  padding: 14px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.profile-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.profile-row-icon {
+  width: 32px; height: 32px;
+  border-radius: 9px;
+  background: var(--primary-50);
+  color: var(--primary-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform .3s var(--ease-out-back);
+}
+.profile-row:hover .profile-row-icon {
+  transform: scale(1.08) rotate(-6deg);
+}
+.profile-row-icon svg { width: 14px; height: 14px; }
+.profile-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.profile-row-label {
+  font-size: 10.5px;
+  color: var(--text-3);
+  font-weight: 400;
+}
+.profile-row-value {
+  font-size: 12.5px;
+  color: var(--text);
+  font-weight: 700;
+  font-feature-settings: "tnum";
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Profile footer */
+.profile-footer {
+  padding: 10px 18px;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border-2);
+  font-size: 10.5px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+}
+.profile-footer-sep {
+  opacity: .5;
+}
+
+/* Stagger entry animation for profile rows */
+.tb-user.is-open .profile-row {
+  animation: profileRowIn .35s var(--ease-out-cinema) both;
+}
+.tb-user.is-open .profile-row:nth-child(1) { animation-delay: .12s; }
+.tb-user.is-open .profile-row:nth-child(2) { animation-delay: .18s; }
+.tb-user.is-open .profile-row:nth-child(3) { animation-delay: .24s; }
+.tb-user.is-open .profile-row:nth-child(4) { animation-delay: .30s; }
+@keyframes profileRowIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 /* ===== MAIN ===== */
@@ -4027,6 +4252,18 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
   .tb-user .tb-user-info { display: none; }
   .tb-user { padding: 4px; border-radius: 50%; }
   .tb-avatar { width: 30px; height: 30px; font-size: 12px; }
+  /* Profile card on mobile: keep left-aligned so it stays inside the screen */
+  .profile-card {
+    width: calc(100vw - 28px);
+    max-width: 320px;
+    left: 0;
+    right: auto;
+    transform-origin: top left;
+  }
+  .profile-card::before {
+    left: 14px;
+    right: auto;
+  }
 
   /* Main content */
   .main {
@@ -4084,7 +4321,26 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
     grid-template-columns: 1fr;
     gap: 18px;
   }
-  .s3-hub-orb { width: 130px; height: 130px; margin: 0 auto; }
+  .s3-hub-orb {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto;
+    padding: 16px;
+  }
+  .s3-orb-icon {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 4px;
+  }
+  .s3-hub-orb h3 {
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+  .s3-hub-orb p {
+    font-size: 9.5px;
+    max-width: 120px;
+    line-height: 1.4;
+  }
   .s3-pillars-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .s3-pillar { padding: 14px 12px; }
 
@@ -4245,12 +4501,62 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
     <svg class="theme-icon-dark"><use href="#i-sun"/></svg>
   </button>
   <button class="tb-icon-btn"><svg><use href="#i-bell"/></svg><span class="tb-badge"></span></button>
-  <div class="tb-user">
+  <div class="tb-user" id="user-menu" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
     <div class="tb-user-info">
       <div class="tb-user-name">وائل عيد</div>
       <div class="tb-user-role">أخصائي أول تحليل أداء وتقارير</div>
     </div>
     <div class="tb-avatar">وا</div>
+
+    <!-- Profile dropdown card -->
+    <div class="profile-card" id="profile-card" role="menu" aria-hidden="true">
+      <div class="profile-head">
+        <div class="profile-avatar">وا</div>
+        <div class="profile-status">
+          <span class="profile-status-dot"></span>
+          متصل الآن
+        </div>
+        <div class="profile-name">وائل عبدالواحد عيد</div>
+        <div class="profile-role">أخصائي أول تحليل أداء وتقارير</div>
+      </div>
+
+      <div class="profile-body">
+        <div class="profile-row">
+          <div class="profile-row-icon"><svg><use href="#i-layers"/></svg></div>
+          <div class="profile-row-text">
+            <span class="profile-row-label">القسم</span>
+            <span class="profile-row-value">إدارة المعلومات والتقارير</span>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-row-icon"><svg><use href="#i-key"/></svg></div>
+          <div class="profile-row-text">
+            <span class="profile-row-label">الرقم الوظيفي</span>
+            <span class="profile-row-value" dir="ltr">15638</span>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-row-icon"><svg><use href="#i-phone"/></svg></div>
+          <div class="profile-row-text">
+            <span class="profile-row-label">رقم الجوال</span>
+            <span class="profile-row-value" dir="ltr">0592441691</span>
+          </div>
+        </div>
+        <div class="profile-row">
+          <div class="profile-row-icon"><svg><use href="#i-mail"/></svg></div>
+          <div class="profile-row-text">
+            <span class="profile-row-label">البريد الإلكتروني</span>
+            <span class="profile-row-value" dir="ltr">weid@nwc.com.sa</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-footer">
+        <span>شركة المياه الوطنية</span>
+        <span class="profile-footer-sep">·</span>
+        <span>القطاع الشمالي الغربي</span>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -4676,8 +4982,8 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 <section class="slide" data-title="المزايا والسمات">
   <div class="page-head">
     <div class="page-head-text">
-      <span class="page-pre"><span class="page-pre-dot"></span>المزايا والسمات</span>
-      <h1 class="page-title">٨ مزايا أساسية</h1>
+      <span class="page-pre"><span class="page-pre-dot"></span>منصة متكاملة بخصائص احترافية وذكية</span>
+      <h1 class="page-title">المزايا والسمات</h1>
       <p class="page-subtitle">تجمع المنصة مجموعة متكاملة من المزايا التشغيلية والتحليلية، صُمّمت لتحقيق أقصى قدر من الكفاءة والمرونة والموثوقية، مع تجربة استخدام بسيطة ومرنة تُمكّن الموظف من أداء مهامه بسرعة ودقة.</p>
     </div>
   </div>
@@ -4850,7 +5156,7 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 <section class="slide" data-title="المتطلبات">
   <div class="page-head">
     <div class="page-head-text">
-      <span class="page-pre"><span class="page-pre-dot"></span>المتطلبات</span>
+      <span class="page-pre"><span class="page-pre-dot"></span>متطلبات الانطلاق الرسمي</span>
       <h1 class="page-title">الاحتياجات والمتطلبات</h1>
       <p class="page-subtitle">عاملان أساسيان لإطلاق المنصة وتشغيلها بنجاح داخل القطاع: الاعتماد التنظيمي والبنية التحتية الآمنة.</p>
     </div>
@@ -4955,7 +5261,7 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 <section class="slide" data-title="الاستمرارية">
   <div class="page-head">
     <div class="page-head-text">
-      <span class="page-pre"><span class="page-pre-dot"></span>الاستمرارية</span>
+      <span class="page-pre"><span class="page-pre-dot"></span>منظومة حيّة تتطوّر مع احتياج العمل والرؤية</span>
       <h1 class="page-title">الاستمرارية والتطوير</h1>
       <p class="page-subtitle">رؤية واضحة للنمو المستقبلي عبر مراحل تطويرية ومسارات تكامل مع أنظمة الشركة.</p>
     </div>
@@ -5078,7 +5384,7 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
 <section class="slide" data-title="الأسئلة المتوقعة">
   <div class="page-head">
     <div class="page-head-text">
-      <span class="page-pre"><span class="page-pre-dot"></span>الأسئلة</span>
+      <span class="page-pre"><span class="page-pre-dot"></span>استباق التساؤلات ومعالجتها بشفافية تامة</span>
       <h1 class="page-title">الأسئلة المتوقعة</h1>
       <p class="page-subtitle">إجابات شاملة على الأسئلة الأساسية حول المنصة وآلية تشغيلها وتكاليفها.</p>
     </div>
@@ -5311,6 +5617,43 @@ strong, b, h1, h2, h3, h4, h5, h6 { font-weight: 700; }
       if (window.innerWidth <= 768) closeMenu();
     });
   });
+
+  // User profile dropdown
+  const userMenu = document.getElementById('user-menu');
+  if (userMenu) {
+    const profileCard = document.getElementById('profile-card');
+    const toggleProfile = (e) => {
+      // Don't close if click was inside the profile card itself
+      if (e.target.closest('.profile-card')) return;
+      e.stopPropagation();
+      const isOpen = userMenu.classList.toggle('is-open');
+      userMenu.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (profileCard) profileCard.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+    };
+    userMenu.addEventListener('click', toggleProfile);
+    userMenu.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleProfile(e);
+      }
+    });
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!userMenu.contains(e.target)) {
+        userMenu.classList.remove('is-open');
+        userMenu.setAttribute('aria-expanded', 'false');
+        if (profileCard) profileCard.setAttribute('aria-hidden', 'true');
+      }
+    });
+    // Close on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && userMenu.classList.contains('is-open')) {
+        userMenu.classList.remove('is-open');
+        userMenu.setAttribute('aria-expanded', 'false');
+        if (profileCard) profileCard.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
 
   // Keyboard (RTL: ArrowRight = prev, ArrowLeft = next)
   document.addEventListener('keydown', (e) => {
